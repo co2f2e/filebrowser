@@ -8,10 +8,6 @@ SERVICE_FILE="/etc/systemd/system/filebrowser_quantum.service"
 STORAGE_BASE="/filebrowser_quantum_storage"
 LOG_FILE="/var/log/filebrowser_quantum.log"
 
-echo "==============================="
-echo "FileBrowser Quantum Uninstaller"
-echo "==============================="
-
 if systemctl list-units --all | grep -q filebrowser_quantum.service; then
     echo "Stopping service..."
     sudo systemctl stop filebrowser_quantum.service || true
@@ -57,6 +53,4 @@ if [ -f "${LOG_FILE}" ]; then
 fi
 
 echo
-echo "======================================="
 echo "FileBrowser Quantum uninstall completed"
-echo "======================================="
