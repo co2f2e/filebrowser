@@ -1,49 +1,62 @@
 #!/usr/bin/env bash
 set -e
-cd /root || exit 1
+
 APP_NAME="filebrowser"
-BIN_PATH="/usr/local/bin/${APP_NAME}"
+BIN_DIR="/usr/local/bin"
 CONFIG_DIR="/etc/filebrowser_quantum"
 SERVICE_FILE="/etc/systemd/system/filebrowser_quantum.service"
-STORAGE_NAME="/filebrowser_quantum_storage"
+STORAGE_BASE="/filebrowser_quantum_storage"
+LOG_FILE="/var/log/filebrowser_quantum.log"
 
-echo "Stopping FileBrowserQuantum service..."
-if systemctl is-active --quiet ${APP_NAME}; then
-    systemctl stop ${APP_NAME}
+echo "==============================="
+echo "FileBrowser Quantum Uninstaller"
+echo "==============================="
+
+if systemctl list-units --all | grep -q filebrowser_quantum.service; then
+    echo "Stopping service..."
+    sudo systemctl stop filebrowser_quantum.service || true
+    sudo systemctl disable filebrowser_quantum.service || true
 fi
 
-echo "Disabling FileBrowserQuantum service..."
-if systemctl is-enabled --quiet ${APP_NAME}; then
-    systemctl disable ${APP_NAME}
-fi
-
-echo "Removing systemd service file..."
 if [ -f "${SERVICE_FILE}" ]; then
-    rm -f "${SERVICE_FILE}"
-    systemctl daemon-reload
+    echo "Removing systemd service..."
+    sudo rm -f "${SERVICE_FILE}"
+    sudo systemctl daemon-reload
 fi
 
-echo "Removing binary..."
-if [ -f "${BIN_PATH}" ]; then
-    rm -f "${BIN_PATH}"
+if [ -f "${BIN_DIR}/${APP_NAME}" ]; then
+    echo "Removing binary..."
+    sudo rm -f "${BIN_DIR}/${APP_NAME}"
 fi
 
-echo "Removing configuration directory..."
 if [ -d "${CONFIG_DIR}" ]; then
-    rm -rf "${CONFIG_DIR}"
+    echo "Removing config directory..."
+    sudo rm -rf "${CONFIG_DIR}"
 fi
 
-if [ -d "${STORAGE_NAME}" ]; then
-    read -p "Do you want to keep existing files? [y/N]: " keep
-    case "$keep" in
-        [yY]|[yY][eE][sS])
-            echo "Keeping existing files."
-            ;;
-        *)
-            echo "Deleting existing directory..."
-            rm -rf "${STORAGE_NAME}"
-            ;;
-    esac
+if [ -d "${STORAGE_BASE}" ]; then
+    echo
+    echo "Storage directory detected:"
+    echo "  ${STORAGE_BASE}"
+    echo "This contains ALL user/admin/shared files!"
+    echo
+    read -rp "Do you want to DELETE the storage directory? (yes/NO): " CONFIRM
+
+    if [[ "${CONFIRM}" == "yes" ]]; then
+        echo "Deleting storage directory..."
+        sudo rm -rf "${STORAGE_BASE}"
+        echo "Storage directory removed."
+    else
+        echo "Storage directory preserved."
+    fi
 fi
 
-echo "FileBrowserQuantum has been completely uninstalled."
+if [ -f "${LOG_FILE}" ]; then
+    echo "Removing log file..."
+    sudo rm -f "${LOG_FILE}"
+fi
+
+echo
+echo "======================================="
+echo "FileBrowser Quantum uninstall completed"
+echo "======================================="
