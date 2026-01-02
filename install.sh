@@ -91,12 +91,6 @@ EOF
 
 DB_FILE="${CONFIG_DIR}/database.db"
 
-if [[ ! -f "$DB_FILE" ]]; then
-    echo "Initializing admin password..."
-    ${BIN_DIR}/${APP_NAME} -c "${CONFIG_FILE}" config set adminPassword "admin123456"
-fi
-
-
 if [[ ! -d "${ADMIN_STORAGE}" ]]; then
     sudo mkdir -p "${ADMIN_STORAGE}"
     sudo chown -R root:root "${ADMIN_STORAGE}"
