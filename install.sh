@@ -118,7 +118,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=${BIN_DIR}/${APP_NAME} -c ${CONFIG_FILE}
+ExecStart=/usr/local/bin/filebrowser
 Restart=on-failure
 User=root
 Group=root
