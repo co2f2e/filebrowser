@@ -35,7 +35,7 @@ else
   exit 1
 fi
 
-if systemctl list-units --all | grep -q filebrowserquantum.service; then
+if systemctl list-units --all | grep -q filebrowser_quantum.service; then
     sudo systemctl stop filebrowserquantum
 fi
 
@@ -138,7 +138,7 @@ echo "==============================="
 echo "FileBrowserQuantum installed & started"
 echo "Access: http://$(hostname -I | awk '{print $1}'):${PORT}"
 echo "Username: ${USERNAME}"
-echo "Password: admin123456"
+echo "Password: (set on first web access)"
 echo "Config at: ${CONFIG_FILE}"
 echo "You can modify config and restart service via:"
 echo "  systemctl restart filebrowser_quantum"
