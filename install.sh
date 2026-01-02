@@ -89,6 +89,14 @@ logging:
     noColors: false
 EOF
 
+DB_FILE="${CONFIG_DIR}/database.db"
+
+if [[ ! -f "$DB_FILE" ]]; then
+    echo "Initializing admin password..."
+    ${BIN_DIR}/${APP_NAME} -c "${CONFIG_FILE}" config set adminPassword "admin123456"
+fi
+
+
 if [[ ! -d "${ADMIN_STORAGE}" ]]; then
     sudo mkdir -p "${ADMIN_STORAGE}"
     sudo chown -R root:root "${ADMIN_STORAGE}"
@@ -128,6 +136,8 @@ LogLevelMax=err
 
 [Install]
 WantedBy=multi-user.target
+Restart=on-failure
+RestartSec=5
 EOF
 
 systemctl daemon-reload
@@ -138,7 +148,7 @@ echo "==============================="
 echo "FileBrowserQuantum installed & started"
 echo "Access: http://$(hostname -I | awk '{print $1}'):${PORT}"
 echo "Username: ${USERNAME}"
-echo "Password: (set on first web access)"
+echo "Password: admin123456"
 echo "Config at: ${CONFIG_FILE}"
 echo "You can modify config and restart service via:"
 echo "  systemctl restart filebrowser_quantum"
