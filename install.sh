@@ -107,6 +107,11 @@ if [[ ! -d "${SHARED_STORAGE}" ]]; then
     sudo chmod -R 755 "${SHARED_STORAGE}"
 fi
 
+${BIN_DIR}/${APP_NAME} -c "${CONFIG_FILE}" &
+sleep 2  
+kill $!  
+${BIN_DIR}/${APP_NAME} -c "${CONFIG_FILE}" config set adminPassword "admin123456"
+
 echo "Default config written to ${CONFIG_FILE}"
 
 echo "Creating systemd service..."
