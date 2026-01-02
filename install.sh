@@ -11,7 +11,6 @@ RELEASE_BASE="https://github.com/gtsteffaniak/filebrowser/releases/latest/downlo
 ADMIN_STORAGE="/filebrowser_quantum_storage/admin"
 SHARED_STORAGE="/filebrowser_quantum_storage/share"
 USER_STORAGE="/filebrowser_quantum_storage/users"
-INIT_FLAG="${CONFIG_DIR}/.admin_initialized"
 
 PORT=$1
 USERNAME=$2
@@ -80,6 +79,7 @@ server:
         defaultEnabled: true
 auth:
   adminUsername: "${USERNAME}"
+  adminPassword: "admin123456"
   methods:
     password:
       enabled: true
@@ -106,14 +106,6 @@ if [[ ! -d "${SHARED_STORAGE}" ]]; then
     sudo mkdir -p "${SHARED_STORAGE}"
     sudo chown -R root:www-data "${SHARED_STORAGE}"
     sudo chmod -R 755 "${SHARED_STORAGE}"
-fi
-
-${BIN_DIR}/${APP_NAME} -c "${CONFIG_FILE}" config show >/dev/null
-
-if [ ! -f "${INIT_FLAG}" ]; then
-    echo "Initializing admin password (one-time)..."
-    ${BIN_DIR}/${APP_NAME} -c "${CONFIG_FILE}" users update "${USERNAME}" --password "admin123456"
-    touch "${INIT_FLAG}"
 fi
 
 echo "Default config written to ${CONFIG_FILE}"
