@@ -79,7 +79,6 @@ server:
         defaultEnabled: true
 auth:
   adminUsername: "${USERNAME}"
-  adminPassword: "admin123456"
   methods:
     password:
       enabled: true
